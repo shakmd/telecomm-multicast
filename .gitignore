@@ -1,0 +1,5 @@
+# Ignore app.yaml file which contains various env variables
+app.yaml 
+
+# Ignore the binary created as part of build of this project
+telecomm-multicast
