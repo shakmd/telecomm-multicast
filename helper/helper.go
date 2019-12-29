@@ -8,7 +8,42 @@ import (
 	"strings"
 )
 
-func CallFolks(fromNumber string, toNumber string, outboundHandlerUrl string) {
+func ExtractRecordingUrl(r *http.Request) string {
+	return r.FormValue("RecordingUrl")
+}
+
+func RecordingUrlExist(r *http.Request) bool {
+	if ExtractRecordingUrl(r) == "" {
+		return false
+	}
+	return true
+}
+
+func getEmergencyContacts() string {
+	return os.Getenv("EmergencyContacts")
+}
+
+func getTwilioNumber() string {
+	return os.Getenv("TwilioNumber")
+}
+
+func getOutboundHandlerUrl() string {
+	return os.Getenv("OutboundHandlerUrl")
+}
+
+func CallFolks() {
+	toNumbers := strings.Split(getEmergencyContacts(), " ")
+
+	fromNumber := getTwilioNumber()
+
+	for _, toNumber := range toNumbers {
+		go func(toNumber string) {
+			callFolks(fromNumber, toNumber, getOutboundHandlerUrl())
+		}(toNumber)
+	}
+}
+
+func callFolks(fromNumber string, toNumber string, outboundHandlerUrl string) {
 	data := url.Values{}
 	data.Set("To", toNumber)
 	data.Set("From", fromNumber)
