@@ -37,7 +37,9 @@ func CallFolks() {
 	fromNumber := getTwilioNumber()
 
 	for _, toNumber := range toNumbers {
-		callFolks(fromNumber, toNumber, getOutboundHandlerUrl())
+		go func(toNumber string) {
+			callFolks(fromNumber, toNumber, getOutboundHandlerUrl())
+		}(toNumber)
 	}
 }
 
